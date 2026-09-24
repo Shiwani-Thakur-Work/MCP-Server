@@ -131,6 +131,10 @@ export async function runServer() {
 
   let transport: SSEServerTransport;
 
+  app.get("/", (req, res) => {
+    res.send("MCP Google Workspace Server is running! Connect your MCP client to the /sse endpoint.");
+  });
+
   app.get("/sse", async (req, res) => {
     transport = new SSEServerTransport("/messages", res);
     await server.connect(transport);
