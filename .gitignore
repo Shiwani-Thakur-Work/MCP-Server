@@ -3,3 +3,5 @@ build/
 tokens/
 .env
 client_secret_*.json
+.env.example
+docs/
