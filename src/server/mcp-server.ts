@@ -150,7 +150,7 @@ export async function runServer() {
         refreshTokenEnvStart: process.env.GOOGLE_REFRESH_TOKEN?.slice(0, 10),
         refreshTokenEnvLen: process.env.GOOGLE_REFRESH_TOKEN?.length
       });
-    } catch (err) {
+    } catch (err: any) {
       res.status(500).json({
         ok: false,
         error: err.message,
