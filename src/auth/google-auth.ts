@@ -17,7 +17,10 @@ export const SCOPES = [
 
 export async function getAuthenticatedClient() {
   if (config.GOOGLE_REFRESH_TOKEN) {
-    oauth2Client.setCredentials({ refresh_token: config.GOOGLE_REFRESH_TOKEN });
+    const raw = config.GOOGLE_REFRESH_TOKEN.trim();
+    const cleanToken = raw.startsWith('"') && raw.endsWith('"') ? raw.slice(1, -1) : raw;
+    console.log('[Auth] Using GOOGLE_REFRESH_TOKEN starting with:', cleanToken.slice(0, 10), 'len:', cleanToken.length);
+    oauth2Client.setCredentials({ refresh_token: cleanToken });
     return oauth2Client;
   }
 

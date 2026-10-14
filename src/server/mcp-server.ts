@@ -139,6 +139,28 @@ export async function runServer() {
     res.status(200).send("OK");
   });
 
+  app.get("/debug-auth", async (req, res) => {
+    try {
+      const { getAuthenticatedClient } = await import("../auth/google-auth");
+      const client = await getAuthenticatedClient();
+      const token = await client.getAccessToken();
+      res.json({
+        ok: true,
+        tokenPrefix: token.token?.slice(0, 12),
+        refreshTokenEnvStart: process.env.GOOGLE_REFRESH_TOKEN?.slice(0, 10),
+        refreshTokenEnvLen: process.env.GOOGLE_REFRESH_TOKEN?.length
+      });
+    } catch (err) {
+      res.status(500).json({
+        ok: false,
+        error: err.message,
+        googleData: err.response?.data,
+        refreshTokenEnvStart: process.env.GOOGLE_REFRESH_TOKEN?.slice(0, 10),
+        refreshTokenEnvLen: process.env.GOOGLE_REFRESH_TOKEN?.length
+      });
+    }
+  });
+
   app.get("/sse", async (req, res) => {
     transport = new SSEServerTransport("/messages", res);
     try { await server.connect(transport); } catch (e: any) { if (e.message?.includes("Already connected")) { await server.close(); await server.connect(transport); } else { throw e; } }
