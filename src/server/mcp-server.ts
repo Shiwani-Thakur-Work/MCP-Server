@@ -141,7 +141,7 @@ export async function runServer() {
 
   app.get("/sse", async (req, res) => {
     transport = new SSEServerTransport("/messages", res);
-    await server.connect(transport);
+    try { await server.connect(transport); } catch (e: any) { if (e.message?.includes("Already connected")) { await server.close(); await server.connect(transport); } else { throw e; } }
   });
 
   app.post("/messages", async (req, res) => {
@@ -157,3 +157,4 @@ export async function runServer() {
     console.error(`MCP Server running on HTTP/SSE port ${PORT}`);
   });
 }
+
